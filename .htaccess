@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Nếu truy cập thư mục gốc, chuyển hướng vào public/
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ public/index.php?url=$1 [QSA,L]
+
+# Nếu truy cập gốc không có path
+RewriteCond %{REQUEST_URI} ^/$
+RewriteRule ^$ public/index.php [L]

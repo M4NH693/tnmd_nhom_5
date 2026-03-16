@@ -1,0 +1,30 @@
+/* =====================================================
+   BOOKSTORE - Design System
+   ===================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary: #2D6A4F; --primary-dark: #1B4332; --primary-light: #40916C;
+    --primary-gradient: linear-gradient(135deg, #2D6A4F 0%, #52B788 100%);
+    --accent: #D4A373; --accent-dark: #C68B59; --accent-light: #E9C46A;
+    --bg-primary: #FEFAE0; --bg-secondary: #F5F0E8; --bg-card: #FFFFFF;
+    --bg-dark: #1A1A2E; --bg-hero: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+    --text-primary: #2B2D42; --text-secondary: #6C757D; --text-light: #ADB5BD; --text-white: #FFFFFF;
+    --border: #E5E5E5; --border-light: #F0F0F0;
+    --success: #2D6A4F; --error: #E63946; --warning: #E9C46A; --info: #457B9D;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08); --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 30px rgba(0,0,0,0.12); --shadow-xl: 0 20px 60px rgba(0,0,0,0.15);
+    --shadow-card-hover: 0 12px 40px rgba(0,0,0,0.15);
+    --font-body: 'Inter', sans-serif; --font-heading: 'Playfair Display', Georgia, serif;
+    --container-width: 1200px; --header-height: 70px;
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 24px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); --transition-fast: all 0.15s ease;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); color: var(--text-primary); background: var(--bg-primary); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { text-decoration: none; color: inherit; transition: var(--transition-fast); }
+img { max-width: 100%; height: auto; display: block; }
+ul, ol { list-style: none; }
+button, input, select, textarea { font-family: inherit; font-size: inherit; border: none; outline: none; }
+.container { width: 100%; max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
