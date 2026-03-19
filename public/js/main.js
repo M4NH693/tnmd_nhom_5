@@ -93,15 +93,33 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
     });
 
-    // === Live Search Suggestions ===
+    // === Live Search Suggestions & History ===
+    const searchForm = document.querySelector('.search-bar');
     const searchInput = document.getElementById('searchInput');
     const searchSuggestions = document.getElementById('searchSuggestions');
+    const searchClearBtn = document.getElementById('searchClearBtn');
     let searchTimeout;
 
-    if (searchInput && searchSuggestions) {
+    if (searchInput && searchSuggestions && searchForm) {
+
+        // Clear button click
+        if (searchClearBtn) {
+            searchClearBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchInput.value = '';
+                searchInput.focus();
+                this.style.display = 'none';
+                searchSuggestions.style.display = 'none';
+            });
+        }
+
         searchInput.addEventListener('input', function() {
             clearTimeout(searchTimeout);
             const query = this.value.trim();
+            
+            if (searchClearBtn) {
+                searchClearBtn.style.display = query.length > 0 ? 'block' : 'none';
+            }
             
             if (query.length < 1) {
                 searchSuggestions.style.display = 'none';
@@ -110,25 +128,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Debounce for 300ms
             searchTimeout = setTimeout(() => {
-                fetch(`${window.location.origin}/tnmd_nhom_5/public/search/ajax?q=${encodeURIComponent(query)}`)
+                const searchUrl = searchForm.getAttribute('action');
+                const ajaxUrl = searchUrl + '/ajax?q=' + encodeURIComponent(query);
+                const baseUrl = searchUrl.replace(/\/search$/, '');
+                
+                fetch(ajaxUrl)
                     .then(response => response.json())
                     .then(data => {
                         searchSuggestions.innerHTML = '';
                         if (data.length > 0) {
                             data.forEach(book => {
-                                const baseUrl = window.location.origin + '/tnmd_nhom_5/public';
                                 const imgSrc = book.cover_image ? 
                                     (book.cover_image.startsWith('/') ? baseUrl + book.cover_image : baseUrl + '/images/books/' + book.cover_image) : 
                                     'https://via.placeholder.com/40x55?text=Img';
-                                
-                                const author = book.authors ? book.authors : 'Đang cập nhật';
                                 
                                 const html = `
                                     <a href="${baseUrl}/book/${book.book_id}" class="search-suggestion-item">
                                         <img src="${imgSrc}" class="search-suggestion-img" alt="${book.title}">
                                         <div class="search-suggestion-info">
                                             <div class="search-suggestion-title">${book.title}</div>
-                                            <div class="search-suggestion-author">${author}</div>
                                         </div>
                                     </a>
                                 `;
@@ -153,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Show suggestions again when focusing on input if it has value
+        // Show suggestions when focusing on input if not empty
         searchInput.addEventListener('focus', function() {
             if (this.value.trim().length > 0 && searchSuggestions.innerHTML !== '') {
                 searchSuggestions.style.display = 'block';

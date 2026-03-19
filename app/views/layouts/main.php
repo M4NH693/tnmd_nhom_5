@@ -23,6 +23,7 @@
                 <i class="fas fa-search search-icon"></i>
                 <input type="text" name="q" id="searchInput" placeholder="Tìm kiếm sách, tác giả..." 
                        value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" autocomplete="off">
+                <i class="fas fa-times search-clear-btn" id="searchClearBtn" style="<?= empty($_GET['q']) ? 'display:none;' : 'display:block;' ?>"></i>
                 <button type="submit"><i class="fas fa-arrow-right"></i></button>
                 <div id="searchSuggestions" class="search-suggestions-dropdown"></div>
             </form>
