@@ -8,6 +8,7 @@ class AuthController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
             $email    = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
 
@@ -19,10 +20,18 @@ class AuthController extends Controller {
                 $_SESSION['user_name'] = $user->full_name;
                 $_SESSION['user_role'] = $user->role;
                 $_SESSION['user_avatar'] = $user->avatar_url;
+                if ($isAjax) {
+                    echo json_encode(['status' => 'success', 'message' => 'Đăng nhập thành công!', 'redirect' => BASE_URL . '/']);
+                    return;
+                }
                 $this->setFlash('success', 'Đăng nhập thành công!');
                 $this->redirect('');
                 return;
             } else {
+                if ($isAjax) {
+                    echo json_encode(['status' => 'error', 'message' => 'Email hoặc mật khẩu không đúng.']);
+                    return;
+                }
                 $data = [
                     'pageTitle' => 'Đăng nhập - BookStore',
                     'error'     => 'Email hoặc mật khẩu không đúng.',
@@ -43,6 +52,7 @@ class AuthController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
             $fullName        = trim($_POST['full_name'] ?? '');
             $email           = trim($_POST['email'] ?? '');
             $password        = $_POST['password'] ?? '';
@@ -67,8 +77,17 @@ class AuthController extends Controller {
                 $_SESSION['user_id']   = $userId;
                 $_SESSION['user_name'] = $fullName;
                 $_SESSION['user_role'] = 'customer';
+                if ($isAjax) {
+                    echo json_encode(['status' => 'success', 'message' => 'Đăng ký thành công! Chào mừng bạn đến với BookStore.', 'redirect' => BASE_URL . '/']);
+                    return;
+                }
                 $this->setFlash('success', 'Đăng ký thành công! Chào mừng bạn đến với BookStore.');
                 $this->redirect('');
+                return;
+            }
+
+            if ($isAjax) {
+                echo json_encode(['status' => 'error', 'message' => implode('<br>', $errors)]);
                 return;
             }
 
