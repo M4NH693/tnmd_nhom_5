@@ -4,13 +4,7 @@
             <h1>Đăng nhập</h1>
             <p class="subtitle">Chào mừng bạn trở lại BookStore</p>
 
-            <?php if (!empty($error)): ?>
-                <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i> <?= $error ?>
-                </div>
-            <?php endif; ?>
-
-            <form method="POST" action="<?= BASE_URL ?>/login">
+            <form id="loginForm" method="POST" action="<?= BASE_URL ?>/login" novalidate>
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" class="form-control"

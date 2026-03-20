@@ -4,18 +4,7 @@
             <h1>Đăng ký tài khoản</h1>
             <p class="subtitle">Tạo tài khoản để mua sắm tại BookStore</p>
 
-            <?php if (!empty($errors)): ?>
-                <div class="alert alert-error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <div>
-                        <?php foreach ($errors as $err): ?>
-                            <div><?= $err ?></div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            <form method="POST" action="<?= BASE_URL ?>/register">
+            <form id="registerForm" method="POST" action="<?= BASE_URL ?>/register" novalidate>
                 <div class="form-group">
                     <label for="full_name">Họ và tên</label>
                     <input type="text" id="full_name" name="full_name" class="form-control"

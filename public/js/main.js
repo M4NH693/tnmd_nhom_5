@@ -10,6 +10,7 @@ import { initAnimations } from './modules/animations.js';
 import { initSearch } from './modules/search.js';
 import { initProduct } from './modules/product.js';
 import { initCart } from './modules/cart.js';
+import { initAuth } from './modules/auth.js';
 
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize all modules
@@ -20,4 +21,5 @@ document.addEventListener('DOMContentLoaded', function () {
     initSearch();
     initProduct();
     initCart();
+    initAuth();
 });

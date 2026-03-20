@@ -122,7 +122,7 @@ for ($s = 1; $s <= 5; $s++) {
                     <form action="<?= BASE_URL ?>/book/review/<?= $book->book_id ?>" method="POST">
                         <div class="form-group" style="margin-bottom: 15px;">
                             <label style="font-weight: 500;">Đánh giá (Sao):</label>
-                            <select name="rating" class="form-control" style="width: 140px; display: inline-block; margin-left: 10px; cursor: pointer;">
+                            <select name="rating" class="form-control" style="width: 175px; display: inline-block; margin-left: 10px; cursor: pointer;">
                                 <option value="5">⭐⭐⭐⭐⭐ 5</option>
                                 <option value="4">⭐⭐⭐⭐ 4</option>
                                 <option value="3">⭐⭐⭐ 3</option>

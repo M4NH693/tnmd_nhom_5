@@ -127,7 +127,7 @@
                 <div class="footer-col">
                     <h4>Liên hệ</h4>
                     <a href="#"><i class="fas fa-phone"></i> 1900 6868</a>
-                    <a href="#"><i class="fas fa-envelope"></i> support@bookstore.vn</a>
+                    <a href="#"><i class="fas fa-envelope"></i> vmanhsaber@gmail.com</a>
                     <a href="#"><i class="fas fa-map-marker-alt"></i> Hà Nội, Việt Nam</a>
                 </div>
             </div>
