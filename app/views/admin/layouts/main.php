@@ -14,8 +14,8 @@
     <aside class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
             <a href="<?= BASE_URL ?>/admin" class="sidebar-logo">
-                <span class="logo-icon"><i class="fas fa-book-open"></i></span>
-                <span class="logo-text">BookStore</span>
+               <div class="logo-icon" style="background: transparent; border-radius: 10px;"><img src="<?= BASE_URL ?>/icon3.png" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"></div>
+                BookStore
             </a>
             <span class="sidebar-badge">ADMIN</span>
         </div>

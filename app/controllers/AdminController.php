@@ -201,10 +201,13 @@ class AdminController extends Controller {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $categoryModel = $this->model('Category');
             $name = trim($_POST['category_name'] ?? '');
+            $image = $this->uploadSingleImage('image', '/images/categories/');
+            
             $categoryModel->insert([
                 'category_name' => $name,
                 'slug'          => $this->createSlug($name),
                 'description'   => trim($_POST['description'] ?? ''),
+                'image'         => $image,
             ]);
             $this->setFlash('success', 'Thêm danh mục thành công!');
             $this->redirect('admin/categories');
@@ -220,11 +223,18 @@ class AdminController extends Controller {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = trim($_POST['category_name'] ?? '');
-            $categoryModel->update($id, [
+            $updateData = [
                 'category_name' => $name,
                 'slug'          => $this->createSlug($name),
                 'description'   => trim($_POST['description'] ?? ''),
-            ]);
+            ];
+            
+            $image = $this->uploadSingleImage('image', '/images/categories/');
+            if ($image) {
+                $updateData['image'] = $image;
+            }
+            
+            $categoryModel->update($id, $updateData);
             $this->setFlash('success', 'Cập nhật danh mục thành công!');
             $this->redirect('admin/categories');
             return;

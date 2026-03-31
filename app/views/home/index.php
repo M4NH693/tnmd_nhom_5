@@ -18,6 +18,28 @@
         </div>
         <div class="hero-image">
             <div class="hero-books">
+                <?php 
+                if (!empty($featured) && count($featured) >= 4): 
+                    $heroBooks = array_slice($featured, 0, 4);
+                    foreach ($heroBooks as $book):
+                ?>
+                <div class="hero-book-card">
+                    <div class="hero-book-cover" style="background: none; padding: 0;">
+                        <?php if(!empty($book->cover_image)): ?>
+                            <img src="<?= BASE_URL . $book->cover_image ?>" alt="<?= htmlspecialchars($book->title) ?>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                        <?php else: ?>
+                            <div style="background: var(--primary-color); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; border-radius: 8px; font-weight: bold; text-align: center; padding: 10px; font-size: 14px;">
+                                <?= htmlspecialchars($book->title) ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    <div class="hero-book-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;"><?= htmlspecialchars($book->title) ?></div>
+                    <div class="hero-book-price"><?= number_format($book->price, 0, ',', '.') ?>₫</div>
+                </div>
+                <?php 
+                    endforeach;
+                else: 
+                ?>
                 <div class="hero-book-card">
                     <div class="hero-book-cover">📖</div>
                     <div class="hero-book-title">Đắc Nhân Tâm</div>
@@ -38,6 +60,7 @@
                     <div class="hero-book-title">Sapiens</div>
                     <div class="hero-book-price">199.000₫</div>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -55,22 +78,21 @@
         </div>
         <div class="categories-grid">
             <?php
-            $icons = ['📖','📚','📕','📗','📘','📙','📓','📔'];
             if (!empty($categories)):
                 foreach ($categories as $i => $cat): ?>
-                <a href="<?= BASE_URL ?>/category/<?= $cat->category_id ?>" class="category-card">
-                    <div class="category-icon"><?= $icons[$i % count($icons)] ?></div>
-                    <div class="category-name"><?= htmlspecialchars($cat->category_name) ?></div>
-                    <div class="category-count"><?= $cat->book_count ?> cuốn sách</div>
+                <a href="<?= BASE_URL ?>/category/<?= $cat->category_id ?>" class="category-card" style="display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; padding: 20px;">
+                    <div style="z-index: 2; position: relative; max-width: 60%;">
+                        <div class="category-name" style="font-size: 18px; font-weight: 600; line-height: 1.4; margin-bottom: 5px;"><?= htmlspecialchars($cat->category_name) ?></div>
+                    </div>
+                    <?php if (!empty($cat->image)): ?>
+                        <div style="position: absolute; right: -10px; bottom: 0; width: 45%; height: 100%; z-index: 1;">
+                            <img src="<?= BASE_URL . $cat->image ?>" alt="<?= htmlspecialchars($cat->category_name) ?>" style="width: 100%; height: 100%; object-fit: contain; object-position: right bottom;">
+                        </div>
+                    <?php endif; ?>
                 </a>
             <?php endforeach;
             else: ?>
-                <div class="category-card"><div class="category-icon">📖</div><div class="category-name">Văn học</div><div class="category-count">120 cuốn sách</div></div>
-                <div class="category-card"><div class="category-icon">📚</div><div class="category-name">Kinh tế</div><div class="category-count">95 cuốn sách</div></div>
-                <div class="category-card"><div class="category-icon">📕</div><div class="category-name">Khoa học</div><div class="category-count">78 cuốn sách</div></div>
-                <div class="category-card"><div class="category-icon">📗</div><div class="category-name">Kỹ năng sống</div><div class="category-count">64 cuốn sách</div></div>
-                <div class="category-card"><div class="category-icon">📘</div><div class="category-name">Thiếu nhi</div><div class="category-count">150 cuốn sách</div></div>
-                <div class="category-card"><div class="category-icon">📙</div><div class="category-name">Ngoại ngữ</div><div class="category-count">45 cuốn sách</div></div>
+                <!-- Dummy ones if empty -->
             <?php endif; ?>
         </div>
     </div>
