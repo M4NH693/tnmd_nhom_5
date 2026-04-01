@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BookStore - Hiệu sách trực tuyến hàng đầu Việt Nam">
-    <title><?= $pageTitle ?? 'BookStore' ?></title>
+    <meta name="description" content="Book4u - Hiệu sách trực tuyến hàng đầu Việt Nam">
+    <title><?= $pageTitle ?? 'Book4u' ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/components.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/pages.css?v=<?= time() ?>">
