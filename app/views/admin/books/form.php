@@ -87,10 +87,17 @@
                 </div>
             </div>
 
-            <div class="admin-form-group">
-                <label for="language">Ngôn ngữ</label>
-                <input type="text" name="language" id="language" class="admin-form-control"
-                       value="<?= htmlspecialchars($isEdit ? ($book->language ?? 'Tiếng Việt') : 'Tiếng Việt') ?>">
+            <div class="form-row">
+                <div class="admin-form-group">
+                    <label for="language">Ngôn ngữ</label>
+                    <input type="text" name="language" id="language" class="admin-form-control"
+                           value="<?= htmlspecialchars($isEdit ? ($book->language ?? 'Tiếng Việt') : 'Tiếng Việt') ?>">
+                </div>
+                <div class="admin-form-group">
+                    <label for="author_name">Tác giả (ngăn cách bằng dấu phẩy)</label>
+                    <input type="text" name="author_name" id="author_name" class="admin-form-control"
+                           value="<?= htmlspecialchars($isEdit ? ($book->authors ?? '') : '') ?>">
+                </div>
             </div>
 
             <div class="admin-form-group">

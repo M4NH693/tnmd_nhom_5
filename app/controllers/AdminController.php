@@ -106,6 +106,8 @@ class AdminController extends Controller {
                 'cover_image' => $coverImage,
             ]);
 
+            $this->syncAuthors($bookId, $_POST['author_name'] ?? '');
+
             // Handle preview images
             $previewImages = $this->uploadMultipleImages('preview_images');
             if (!empty($previewImages)) {
@@ -127,7 +129,7 @@ class AdminController extends Controller {
     public function editBook($id) {
         $bookModel = $this->model('Book');
         $categoryModel = $this->model('Category');
-        $book = $bookModel->findById($id);
+        $book = $bookModel->getDetail($id);
         if (!$book) { $this->redirect('admin/books'); return; }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -151,6 +153,8 @@ class AdminController extends Controller {
             }
 
             $bookModel->update($id, $updateData);
+            
+            $this->syncAuthors($id, $_POST['author_name'] ?? '');
 
             $previewImages = $this->uploadMultipleImages('preview_images');
             if (!empty($previewImages)) {
@@ -425,5 +429,34 @@ class AdminController extends Controller {
             }
         }
         return $uploadedUrls;
+    }
+
+    private function syncAuthors($bookId, $authorNames) {
+        if (!$bookId) return;
+        $db = Database::getInstance()->getConnection();
+        
+        $stmtDel = $db->prepare("DELETE FROM book_authors WHERE book_id = ?");
+        $stmtDel->execute([$bookId]);
+        
+        $names = array_filter(array_map('trim', explode(',', $authorNames)));
+        if (empty($names)) return;
+        
+        $stmtCheck = $db->prepare("SELECT author_id FROM authors WHERE author_name = ?");
+        $stmtInsertAuthor = $db->prepare("INSERT INTO authors (author_name) VALUES (?)");
+        $stmtLink = $db->prepare("INSERT INTO book_authors (book_id, author_id) VALUES (?, ?)");
+        
+        foreach ($names as $name) {
+            $stmtCheck->execute([$name]);
+            $author = $stmtCheck->fetch();
+            if ($author) {
+                $authorId = $author->author_id;
+            } else {
+                $stmtInsertAuthor->execute([$name]);
+                $authorId = $db->lastInsertId();
+            }
+            try {
+                $stmtLink->execute([$bookId, $authorId]);
+            } catch (\PDOException $e) {}
+        }
     }
 }
