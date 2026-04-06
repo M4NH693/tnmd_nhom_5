@@ -38,6 +38,8 @@ $router->add('category/{id}', 'BookController', 'category');
 $router->add('login', 'AuthController', 'login');
 $router->add('register', 'AuthController', 'register');
 $router->add('logout', 'AuthController', 'logout');
+$router->add('forgot-password', 'AuthController', 'forgotPassword');
+$router->add('reset-password', 'AuthController', 'resetPassword');
 $router->add('cart', 'CartController', 'index');
 $router->add('cart/add', 'CartController', 'add');
 $router->add('cart/update', 'CartController', 'update');
@@ -50,6 +52,7 @@ $router->add('search/ajax', 'BookController', 'ajaxSearch');
 $router->add('search', 'BookController', 'search');
 $router->add('account', 'AccountController', 'dashboard');
 $router->add('account/avatar', 'AccountController', 'updateAvatar');
+$router->add('account/name', 'AccountController', 'updateName');
 $router->add('account/password', 'AccountController', 'changePassword');
 
 // ========== ADMIN ROUTES ==========

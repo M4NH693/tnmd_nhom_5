@@ -121,4 +121,31 @@ class AccountController extends Controller {
         $this->setFlash('success', 'Đổi mật khẩu thành công!');
         $this->redirect('account');
     }
+
+    /**
+     * Sửa tên người dùng
+     */
+    public function updateName() {
+        $this->requireLogin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('account');
+            return;
+        }
+
+        $fullName = trim($_POST['full_name'] ?? '');
+
+        if (empty($fullName)) {
+            $this->setFlash('error', 'Họ tên không được để trống.');
+            $this->redirect('account');
+            return;
+        }
+
+        $userModel = $this->model('User');
+        $userModel->updateName($_SESSION['user_id'], $fullName);
+        $_SESSION['user_name'] = $fullName;
+
+        $this->setFlash('success', 'Cập nhật họ tên thành công!');
+        $this->redirect('account');
+    }
 }

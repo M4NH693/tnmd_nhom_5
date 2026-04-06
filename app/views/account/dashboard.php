@@ -46,7 +46,18 @@
                             <input type="file" id="avatarInput" name="avatar" accept="image/*" hidden>
                         </form>
                     </div>
-                    <h3 class="avatar-name"><?= htmlspecialchars($user->full_name) ?></h3>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 6px; position: relative; margin: 15px 0 5px 0;">
+                        <h3 class="avatar-name" id="displayName" style="margin: 0;"><?= htmlspecialchars($user->full_name) ?></h3>
+                        <button type="button" aria-label="Sửa tên" onclick="toggleNameEdit()" style="border: none; background: none; color: var(--text-secondary); cursor: pointer; padding: 4px; transition: color 0.3s;">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    
+                    <form action="<?= BASE_URL ?>/account/name" method="POST" id="editNameForm" style="display: none; justify-content: center; align-items: center; gap: 5px; margin-bottom: 15px;">
+                        <input type="text" name="full_name" value="<?= htmlspecialchars($user->full_name) ?>" class="form-control" style="width: 150px; text-align: center; padding: 5px 8px;" required>
+                        <button type="submit" class="btn btn-primary" style="padding: 5px 10px; min-width: unset;"><i class="fas fa-check"></i></button>
+                        <button type="button" class="btn btn-outline" style="padding: 5px 10px; min-width: unset;" onclick="toggleNameEdit()"><i class="fas fa-times"></i></button>
+                    </form>
                     <span class="avatar-role">
                         <i class="fas fa-<?= $user->role === 'admin' ? 'shield-alt' : 'user' ?>"></i>
                         <?= $user->role === 'admin' ? 'Quản trị viên' : 'Khách hàng' ?>
@@ -181,6 +192,21 @@ document.getElementById('avatarInput').addEventListener('change', function() {
         document.getElementById('avatarForm').submit();
     }
 });
+
+// Toggle name edit form
+function toggleNameEdit() {
+    const displayName = document.getElementById('displayName').parentElement;
+    const form = document.getElementById('editNameForm');
+    
+    if (form.style.display === 'none') {
+        form.style.display = 'flex';
+        displayName.style.display = 'none';
+        form.querySelector('input').focus();
+    } else {
+        form.style.display = 'none';
+        displayName.style.display = 'flex';
+    }
+}
 
 // Toggle password visibility
 function togglePassword(inputId, btn) {

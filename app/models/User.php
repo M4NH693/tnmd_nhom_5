@@ -10,12 +10,13 @@ class User extends Model {
         return $this->queryOne("SELECT * FROM users WHERE email = ?", [$email]);
     }
 
-    public function register($fullName, $email, $password) {
+    public function register($fullName, $email, $password, $phone = null) {
         $hash = password_hash($password, PASSWORD_BCRYPT);
         return $this->insert([
             'full_name'     => $fullName,
             'email'         => $email,
             'password_hash' => $hash,
+            'phone'         => $phone,
             'role'          => 'customer',
         ]);
     }
@@ -31,5 +32,9 @@ class User extends Model {
     public function updatePassword($userId, $newPassword) {
         $hash = password_hash($newPassword, PASSWORD_BCRYPT);
         return $this->update($userId, ['password_hash' => $hash]);
+    }
+
+    public function updateName($userId, $fullName) {
+        return $this->update($userId, ['full_name' => $fullName]);
     }
 }

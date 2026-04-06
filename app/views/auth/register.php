@@ -2,7 +2,7 @@
     <div class="auth-container">
         <div class="auth-card">
             <h1>Đăng ký tài khoản</h1>
-            <p class="subtitle">Tạo tài khoản để mua sắm tại BookStore</p>
+            <p class="subtitle">Tạo tài khoản để mua sắm tại Book4U</p>
 
             <form id="registerForm" method="POST" action="<?= BASE_URL ?>/register" novalidate>
                 <div class="form-group">
@@ -18,6 +18,14 @@
                            placeholder="example@email.com"
                            value="<?= htmlspecialchars($email ?? '') ?>" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="phone">Số điện thoại</label>
+                    <input type="tel" id="phone" name="phone" class="form-control"
+                           placeholder="0912345678"
+                           value="<?= htmlspecialchars($phone ?? '') ?>" required pattern="[0-9]{10}">
+                </div>
+
 
                 <div class="form-group">
                     <label for="password">Mật khẩu</label>

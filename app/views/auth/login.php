@@ -2,7 +2,7 @@
     <div class="auth-container">
         <div class="auth-card">
             <h1>Đăng nhập</h1>
-            <p class="subtitle">Chào mừng bạn trở lại BookStore</p>
+            <p class="subtitle">Chào mừng bạn trở lại Book4U</p>
 
             <form id="loginForm" method="POST" action="<?= BASE_URL ?>/login" novalidate>
                 <div class="form-group">
@@ -29,6 +29,12 @@
                     <i class="fas fa-sign-in-alt"></i> Đăng nhập
                 </button>
             </form>
+
+            <div style="text-align: center; margin-top: 12px;">
+                <a href="<?= BASE_URL ?>/forgot-password" style="color: var(--primary); font-size: 0.9em; text-decoration: none;">
+                    <i class="fas fa-key"></i> Quên mật khẩu?
+                </a>
+            </div>
 
             <div class="auth-footer">
                 Chưa có tài khoản? <a href="<?= BASE_URL ?>/register">Đăng ký ngay</a>
