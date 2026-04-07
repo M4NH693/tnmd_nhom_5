@@ -1,9 +1,9 @@
 # Tài Liệu Đặc Tả Yêu Cầu Phần Mềm (SRS)
 ## Hệ Thống Web Bán Sách Trực Tuyến — **Book4u**
 
-**Phiên bản**: 2.0  
+**Phiên bản**: 2.1  
 **Nhóm**: 5  
-**Ngày cập nhật**: 05/04/2026
+**Ngày cập nhật**: 07/04/2026
 
 ---
 
@@ -123,6 +123,22 @@ Book4u là website thương mại điện tử bán sách xây dựng theo mô h
 
 #### FR-AUTH-03: Đăng Xuất
 - **Mô tả**: Hủy session và chuyển về trang đăng nhập.
+
+#### FR-AUTH-04: Quên Mật Khẩu
+- **Mô tả**: Yêu cầu khôi phục tài khoản khi quên mật khẩu thông qua kiểm tra email và xác thực họ tên hợp lệ.
+- **Đầu vào**: `email`, `full_name`.
+- **Xử lý**:
+  - Kiểm tra email và họ tên (không phân biệt hoa/thường) phải tồn tại và khớp sát với CSDL.
+  - Tạo ngẫu nhiên một `reset_token` bằng `random_bytes` lưu vào `$_SESSION` với thời hạn là 15 phút. Chỉ cho phép thiết lập lại trong cùng phiên duyệt web.
+  - Chuyển hướng đến trang Đặt lại mật khẩu với tham số token qua URL.
+
+#### FR-AUTH-05: Đặt Lại Mật Khẩu
+- **Mô tả**: Thiết lập mật khẩu mới sử dụng token được cung cấp.
+- **Điều kiện**: Tham số `token` trong URL phải hợp lệ, khớp với token trong session và session đó chưa quá hạn (15 phút).
+- **Đầu vào**: `new_password`, `confirm_password` (tối thiểu 6 ký tự).
+- **Xử lý**:
+  - Hash mật khẩu bằng bcrypt vào hệ thống.
+  - Hủy ngay các session liên quan sau cập nhật mật khẩu, chuyển về trang đăng nhập kèm thông báo.
 
 ---
 
@@ -578,6 +594,8 @@ tnmd_nhom_5/
 | Cập nhật địa chỉ          | `/orders/update-address/{id}`     | POST — sửa địa chỉ pending    |
 | Đăng nhập                | `/login`                          | Form đăng nhập                 |
 | Đăng ký                  | `/register`                       | Form đăng ký                   |
+| Quên mật khẩu            | `/forgot-password`                | Yêu cầu khôi phục mật khẩu     |
+| Đặt lại mật khẩu         | `/reset-password?token=...`       | Form đặt lại mật khẩu mới      |
 | Hồ sơ cá nhân            | `/account`                        | Dashboard người dùng           |
 | Cập nhật avatar          | `/account/avatar`                 | POST — upload ảnh đại diện    |
 | Đổi mật khẩu             | `/account/password`               | POST — đổi mật khẩu           |
@@ -644,4 +662,4 @@ tnmd_nhom_5/
 
 ---
 
-*Tài liệu SRS phiên bản 2.0 — Nhóm 5 — Ngày 05/04/2026*
+*Tài liệu SRS phiên bản 2.1 — Nhóm 5 — Ngày 07/04/2026*
