@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Book4u - Hiệu sách trực tuyến hàng đầu Việt Nam">
     <title><?= $pageTitle ?? 'Book4u' ?></title>
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/icon3.png">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/components.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/pages.css?v=<?= time() ?>">

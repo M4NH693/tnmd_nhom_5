@@ -1,9 +1,9 @@
 # Tài Liệu Đặc Tả Yêu Cầu Phần Mềm (SRS)
 ## Hệ Thống Web Bán Sách Trực Tuyến — **Book4u**
 
-**Phiên bản**: 2.1  
+**Phiên bản**: 2.2  
 **Nhóm**: 5  
-**Ngày cập nhật**: 07/04/2026
+**Ngày cập nhật**: 11/04/2026
 
 ---
 
@@ -91,6 +91,7 @@ Book4u là website thương mại điện tử bán sách xây dựng theo mô h
 | Ngôn ngữ backend | PHP 8.3                       |
 | Cơ sở dữ liệu    | MySQL 8.4                     |
 | Web server       | Apache (Laragon)              |
+| Thư viện PHP     | PHPMailer (Gửi email)         |
 | Frontend         | HTML5, CSS3, JavaScript (ES6+)|
 | Thư viện JS      | Chart.js, Font Awesome 6      |
 | Phông chữ        | Google Fonts (Inter, Outfit)  |
@@ -125,20 +126,19 @@ Book4u là website thương mại điện tử bán sách xây dựng theo mô h
 - **Mô tả**: Hủy session và chuyển về trang đăng nhập.
 
 #### FR-AUTH-04: Quên Mật Khẩu
-- **Mô tả**: Yêu cầu khôi phục tài khoản khi quên mật khẩu thông qua kiểm tra email và xác thực họ tên hợp lệ.
-- **Đầu vào**: `email`, `full_name`.
+- **Mô tả**: Yêu cầu khôi phục tài khoản khi quên mật khẩu thông qua email cá nhân.
+- **Đầu vào**: `email`.
 - **Xử lý**:
-  - Kiểm tra email và họ tên (không phân biệt hoa/thường) phải tồn tại và khớp sát với CSDL.
-  - Tạo ngẫu nhiên một `reset_token` bằng `random_bytes` lưu vào `$_SESSION` với thời hạn là 15 phút. Chỉ cho phép thiết lập lại trong cùng phiên duyệt web.
-  - Chuyển hướng đến trang Đặt lại mật khẩu với tham số token qua URL.
+  - Kiểm tra email có hợp lệ và tồn tại trong hệ thống hay không.
+  - Tạo ngẫu nhiên một mã OTP gồm 6 chữ số.
+  - Lưu mã OTP vào `reset_token` và thiết lập `reset_expires_at` (15 phút) trong CSDL.
+  - Sử dụng thư viện **PHPMailer** để gửi email chứa mã OTP đến người dùng.
 
-#### FR-AUTH-05: Đặt Lại Mật Khẩu
-- **Mô tả**: Thiết lập mật khẩu mới sử dụng token được cung cấp.
-- **Điều kiện**: Tham số `token` trong URL phải hợp lệ, khớp với token trong session và session đó chưa quá hạn (15 phút).
-- **Đầu vào**: `new_password`, `confirm_password` (tối thiểu 6 ký tự).
+#### FR-AUTH-05: Xác Thực OTP & Đặt Lại Mật Khẩu
+- **Mô tả**: Sử dụng mã OTP để xác thực và thiết lập mật khẩu mới.
 - **Xử lý**:
-  - Hash mật khẩu bằng bcrypt vào hệ thống.
-  - Hủy ngay các session liên quan sau cập nhật mật khẩu, chuyển về trang đăng nhập kèm thông báo.
+  - **Bước 1 (Xác thực OTP)**: Nhập mã OTP 6 chữ số. Kiểm tra khớp với `reset_token` và chưa quá hạn `reset_expires_at` trong CSDL. Nếu đúng, đánh dấu xác thực thành công trong session.
+  - **Bước 2 (Đặt lại mật khẩu)**: Nhập `new_password`, `confirm_password` (tối thiểu 6 ký tự). Cần có session xác thực OTP trước đó. Hash mật khẩu bằng bcrypt và hệ thống xóa mã OTP cũ trong DB (SET NULL). Chuyển về trang đăng nhập.
 
 ---
 
@@ -384,15 +384,17 @@ users ──< wishlists >── books
 
 | Cột             | Kiểu dữ liệu             | Mô tả                         |
 |-----------------|--------------------------|--------------------------------|
-| `user_id`       | INT UNSIGNED PK AI       | Khóa chính                    |
-| `email`         | VARCHAR(255) UNIQUE      | Email đăng nhập               |
-| `password_hash` | VARCHAR(255)             | Mật khẩu hash (bcrypt)        |
-| `full_name`     | NVARCHAR(150)            | Họ và tên                     |
-| `phone`         | VARCHAR(20)              | Số điện thoại                 |
-| `avatar_url`    | VARCHAR(500)             | Đường dẫn ảnh đại diện        |
-| `role`          | ENUM('customer','admin') | Vai trò                       |
-| `is_active`     | TINYINT(1)               | 1 = hoạt động, 0 = bị khóa   |
-| `created_at`    | DATETIME                 | Thời điểm tạo                |
+| `user_id`          | INT UNSIGNED PK AI       | Khóa chính                    |
+| `email`            | VARCHAR(255) UNIQUE      | Email đăng nhập               |
+| `password_hash`    | VARCHAR(255)             | Mật khẩu hash (bcrypt)        |
+| `full_name`        | NVARCHAR(150)            | Họ và tên                     |
+| `phone`            | VARCHAR(20)              | Số điện thoại                 |
+| `avatar_url`       | VARCHAR(500)             | Đường dẫn ảnh đại diện        |
+| `role`             | ENUM('customer','admin') | Vai trò                       |
+| `is_active`        | TINYINT(1)               | 1 = hoạt động, 0 = bị khóa   |
+| `reset_token`      | VARCHAR(64)              | Mã OTP quên mật khẩu          |
+| `reset_expires_at` | DATETIME                 | Hạn sử dụng OTP               |
+| `created_at`       | DATETIME                 | Thời điểm tạo                |
 
 #### Bảng `books` — Sách
 
@@ -522,6 +524,8 @@ tnmd_nhom_5/
 ├── app/
 │   ├── config/database.php          # Cấu hình MySQL
 │   ├── core/
+│   │   ├── PHPMailer/               # Thư viện PHPMailer
+│   │   ├── Mailer.php               # Class hỗ trợ gửi email
 │   │   ├── Router.php               # Định tuyến URL (regex)
 │   │   ├── Controller.php           # Base Controller
 │   │   ├── Model.php                # Base Model (PDO)
@@ -595,7 +599,8 @@ tnmd_nhom_5/
 | Đăng nhập                | `/login`                          | Form đăng nhập                 |
 | Đăng ký                  | `/register`                       | Form đăng ký                   |
 | Quên mật khẩu            | `/forgot-password`                | Yêu cầu khôi phục mật khẩu     |
-| Đặt lại mật khẩu         | `/reset-password?token=...`       | Form đặt lại mật khẩu mới      |
+| Xác thực OTP             | `/verify-otp`                     | Nhập mã xác thực OTP từ email |
+| Đặt lại mật khẩu         | `/reset-password`                 | Form đặt lại mật khẩu mới      |
 | Hồ sơ cá nhân            | `/account`                        | Dashboard người dùng           |
 | Cập nhật avatar          | `/account/avatar`                 | POST — upload ảnh đại diện    |
 | Đổi mật khẩu             | `/account/password`               | POST — đổi mật khẩu           |
@@ -662,4 +667,4 @@ tnmd_nhom_5/
 
 ---
 
-*Tài liệu SRS phiên bản 2.1 — Nhóm 5 — Ngày 07/04/2026*
+*Tài liệu SRS phiên bản 2.2 — Nhóm 5 — Ngày 11/04/2026*

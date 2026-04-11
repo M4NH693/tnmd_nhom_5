@@ -1,7 +1,9 @@
 <?php
-class AuthController extends Controller {
+class AuthController extends Controller
+{
 
-    public function login() {
+    public function login()
+    {
         if ($this->isLoggedIn()) {
             $this->redirect('');
             return;
@@ -9,7 +11,7 @@ class AuthController extends Controller {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-            $email    = trim($_POST['email'] ?? '');
+            $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
             $agreeTerms = isset($_POST['agree_terms']);
 
@@ -20,8 +22,8 @@ class AuthController extends Controller {
                 }
                 $data = [
                     'pageTitle' => 'Đăng nhập - BookStore',
-                    'error'     => 'Bạn cần đồng ý với Điều khoản sử dụng để tiếp tục!',
-                    'email'     => $email,
+                    'error' => 'Bạn cần đồng ý với Điều khoản sử dụng để tiếp tục!',
+                    'email' => $email,
                 ];
                 $this->view('auth/login', $data);
                 return;
@@ -31,7 +33,7 @@ class AuthController extends Controller {
             $user = $userModel->findByEmail($email);
 
             if ($user && $userModel->verifyPassword($password, $user->password_hash)) {
-                $_SESSION['user_id']   = $user->user_id;
+                $_SESSION['user_id'] = $user->user_id;
                 $_SESSION['user_name'] = $user->full_name;
                 $_SESSION['user_role'] = $user->role;
                 $_SESSION['user_avatar'] = $user->avatar_url;
@@ -49,8 +51,8 @@ class AuthController extends Controller {
                 }
                 $data = [
                     'pageTitle' => 'Đăng nhập - BookStore',
-                    'error'     => 'Email hoặc mật khẩu không đúng.',
-                    'email'     => $email,
+                    'error' => 'Email hoặc mật khẩu không đúng.',
+                    'email' => $email,
                 ];
                 $this->view('auth/login', $data);
                 return;
@@ -60,7 +62,8 @@ class AuthController extends Controller {
         $this->view('auth/login', ['pageTitle' => 'Đăng nhập - BookStore']);
     }
 
-    public function register() {
+    public function register()
+    {
         if ($this->isLoggedIn()) {
             $this->redirect('');
             return;
@@ -68,17 +71,19 @@ class AuthController extends Controller {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-            $fullName        = trim($_POST['full_name'] ?? '');
-            $email           = trim($_POST['email'] ?? '');
-            $phone           = trim($_POST['phone'] ?? '');
-            $password        = $_POST['password'] ?? '';
+            $fullName = trim($_POST['full_name'] ?? '');
+            $email = trim($_POST['email'] ?? '');
+            $phone = trim($_POST['phone'] ?? '');
+            $password = $_POST['password'] ?? '';
             $confirmPassword = $_POST['confirm_password'] ?? '';
             $agreeTerms = isset($_POST['agree_terms']);
             $errors = [];
 
-            if (!$agreeTerms) $errors[] = 'Bạn cần đồng ý với Điều khoản sử dụng để tiếp tục!';
+            if (!$agreeTerms)
+                $errors[] = 'Bạn cần đồng ý với Điều khoản sử dụng để tiếp tục!';
 
-            if (empty($fullName)) $errors[] = 'Vui lòng nhập họ tên.';
+            if (empty($fullName))
+                $errors[] = 'Vui lòng nhập họ tên.';
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL))
                 $errors[] = 'Email không hợp lệ.';
             if (empty($phone) || !preg_match('/^[0-9]{10,11}$/', $phone))
@@ -95,7 +100,7 @@ class AuthController extends Controller {
 
             if (empty($errors)) {
                 $userId = $userModel->register($fullName, $email, $password, $phone);
-                $_SESSION['user_id']   = $userId;
+                $_SESSION['user_id'] = $userId;
                 $_SESSION['user_name'] = $fullName;
                 $_SESSION['user_role'] = 'customer';
                 if ($isAjax) {
@@ -114,10 +119,10 @@ class AuthController extends Controller {
 
             $data = [
                 'pageTitle' => 'Đăng ký - BookStore',
-                'errors'    => $errors,
+                'errors' => $errors,
                 'full_name' => $fullName,
-                'email'     => $email,
-                'phone'     => $phone,
+                'email' => $email,
+                'phone' => $phone,
             ];
             $this->view('auth/register', $data);
             return;
@@ -126,7 +131,8 @@ class AuthController extends Controller {
         $this->view('auth/register', ['pageTitle' => 'Đăng ký - BookStore']);
     }
 
-    public function forgotPassword() {
+    public function forgotPassword()
+    {
         if ($this->isLoggedIn()) {
             $this->redirect('');
             return;
@@ -156,11 +162,11 @@ class AuthController extends Controller {
                 $_SESSION['otp_email'] = $email;
 
                 // Chuẩn bị nội dung email
-                $subject = "Mã xác thực khôi phục mật khẩu - BookStore";
+                $subject = "Mã xác thực khôi phục mật khẩu - Book4U";
                 $body = "
                 <div style='font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;'>
                     <div style='background-color: #0f172a; color: #fff; padding: 20px; text-align: center;'>
-                        <h2 style='margin: 0;'>BookStore</h2>
+                        <h2 style='margin: 0;'>Book4U</h2>
                     </div>
                     <div style='padding: 20px;'>
                         <p>Xin chào <strong>{$user->full_name}</strong>,</p>
@@ -199,7 +205,8 @@ class AuthController extends Controller {
         $this->view('auth/forgot_password', $data);
     }
 
-    public function verifyOtp() {
+    public function verifyOtp()
+    {
         if ($this->isLoggedIn()) {
             $this->redirect('');
             return;
@@ -241,7 +248,8 @@ class AuthController extends Controller {
         $this->view('auth/verify_otp', $data);
     }
 
-    public function resetPassword() {
+    public function resetPassword()
+    {
         if ($this->isLoggedIn()) {
             $this->redirect('');
             return;
@@ -271,7 +279,7 @@ class AuthController extends Controller {
             if (empty($errors)) {
                 $userModel = $this->model('User');
                 $user = $userModel->findByEmail($_SESSION['otp_email']);
-                
+
                 if ($user) {
                     $userModel->updatePassword($user->user_id, $newPassword);
                     $userModel->clearResetToken($user->user_id);
@@ -292,7 +300,8 @@ class AuthController extends Controller {
         $this->view('auth/reset_password', $data);
     }
 
-    public function logout() {
+    public function logout()
+    {
         session_destroy();
         header("Location: " . BASE_URL . "/login");
         exit;
