@@ -23,7 +23,7 @@
                     $heroBooks = array_slice($featured, 0, 4);
                     foreach ($heroBooks as $book):
                 ?>
-                <div class="hero-book-card">
+                <a href="<?= BASE_URL ?>/book/<?= $book->book_id ?>" class="hero-book-card" style="display: block; text-decoration: none;">
                     <div class="hero-book-cover" style="background: none; padding: 0;">
                         <?php if(!empty($book->cover_image)): ?>
                             <img src="<?= BASE_URL . $book->cover_image ?>" alt="<?= htmlspecialchars($book->title) ?>" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
@@ -35,31 +35,31 @@
                     </div>
                     <div class="hero-book-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;"><?= htmlspecialchars($book->title) ?></div>
                     <div class="hero-book-price"><?= number_format($book->price, 0, ',', '.') ?>₫</div>
-                </div>
+                </a>
                 <?php 
                     endforeach;
                 else: 
                 ?>
-                <div class="hero-book-card">
+                <a href="#" class="hero-book-card" style="display: block; text-decoration: none;">
                     <div class="hero-book-cover">📖</div>
                     <div class="hero-book-title">Đắc Nhân Tâm</div>
                     <div class="hero-book-price">89.000₫</div>
-                </div>
-                <div class="hero-book-card">
+                </a>
+                <a href="#" class="hero-book-card" style="display: block; text-decoration: none;">
                     <div class="hero-book-cover">📚</div>
                     <div class="hero-book-title">Nhà Giả Kim</div>
                     <div class="hero-book-price">75.000₫</div>
-                </div>
-                <div class="hero-book-card">
+                </a>
+                <a href="#" class="hero-book-card" style="display: block; text-decoration: none;">
                     <div class="hero-book-cover">📕</div>
                     <div class="hero-book-title">Tư Duy Nhanh Chậm</div>
                     <div class="hero-book-price">159.000₫</div>
-                </div>
-                <div class="hero-book-card">
+                </a>
+                <a href="#" class="hero-book-card" style="display: block; text-decoration: none;">
                     <div class="hero-book-cover">📗</div>
                     <div class="hero-book-title">Sapiens</div>
                     <div class="hero-book-price">199.000₫</div>
-                </div>
+                </a>
                 <?php endif; ?>
             </div>
         </div>
