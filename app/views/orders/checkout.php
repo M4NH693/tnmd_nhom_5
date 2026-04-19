@@ -63,7 +63,10 @@
                             <div style="font-size:0.85rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
                                 <?= htmlspecialchars($item->title) ?>
                             </div>
-                            <div style="font-size:0.8rem;color:var(--text-secondary);">x<?= $item->quantity ?></div>
+                            <div style="font-size:0.8rem;color:var(--text-secondary);">
+                                x<?= $item->quantity ?> 
+                                <span style="margin-left:8px; font-size:0.75rem; color:var(--text-muted, #999);">(Kho: <?= $item->stock_quantity ?>)</span>
+                            </div>
                         </div>
                         <div style="font-weight:600;font-size:0.9rem;color:var(--error);">
                             <?= number_format($item->price * $item->quantity, 0, ',', '.') ?>₫

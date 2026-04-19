@@ -74,7 +74,7 @@ for ($s = 1; $s <= 5; $s++) {
                 <input type="hidden" name="book_id" value="<?= $book->book_id ?>">
                 <div class="quantity-selector">
                     <button type="button" onclick="changeQty(-1)">−</button>
-                    <input type="number" name="quantity" id="qtyInput" value="1" min="1" max="<?= $book->stock_quantity ?>">
+                    <input type="number" name="quantity" id="qtyInput" value="1" min="1" data-stock="<?= $book->stock_quantity ?>" onchange="validateQty(this, <?= $book->stock_quantity ?>)">
                     <button type="button" onclick="changeQty(1)">+</button>
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg">
@@ -208,6 +208,17 @@ function toggleEditReview(reviewId) {
     } else {
         displayDiv.style.display = 'block';
         editDiv.style.display = 'none';
+    }
+}
+
+function validateQty(input, maxStock) {
+    let val = parseInt(input.value);
+    if (isNaN(val) || val < 1) {
+        input.value = 1;
+    } else if (val > maxStock) {
+        if (typeof window.showStockWarning === 'function') {
+            window.showStockWarning(maxStock);
+        }
     }
 }
 </script>

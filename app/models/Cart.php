@@ -61,6 +61,21 @@ class Cart extends Model {
         return $result->total ?? 0;
     }
 
+    public function getBookStock($bookId) {
+        $result = $this->queryOne(
+            "SELECT stock_quantity FROM books WHERE book_id = ?", [$bookId]
+        );
+        return $result ? (int)$result->stock_quantity : 0;
+    }
+
+    public function getExistingQuantity($userId, $bookId) {
+        $result = $this->queryOne(
+            "SELECT quantity FROM cart_items WHERE user_id = ? AND book_id = ?",
+            [$userId, $bookId]
+        );
+        return $result ? (int)$result->quantity : 0;
+    }
+
     public function getCartTotal($userId) {
         $result = $this->queryOne(
             "SELECT SUM(ci.quantity * b.price) as total

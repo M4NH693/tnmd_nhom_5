@@ -2,14 +2,33 @@ export function initAlerts() {
     // === Auto-remove flash messages ===
     const flashes = document.querySelectorAll('.flash-message');
     flashes.forEach(function (flash) {
-        setTimeout(function () {
+        const text = flash.textContent || flash.innerText || '';
+        if (text.toLowerCase().includes('vượt quá số lượng trong kho')) {
             flash.style.display = 'none';
-        }, 3500);
+            if (typeof window.showStockWarning === 'function') {
+                window.showStockWarning();
+            } else {
+                setTimeout(() => {
+                    if (typeof window.showStockWarning === 'function') window.showStockWarning();
+                }, 500);
+            }
+        } else {
+            setTimeout(function () {
+                flash.style.display = 'none';
+            }, 3500);
+        }
     });
 }
 
 // Attach to window so it can be called globally, similar to inline script
 export function showToast(message, type = 'success') {
+    if (message && message.toLowerCase().includes('vượt quá số lượng trong kho')) {
+        if (typeof window.showStockWarning === 'function') {
+            window.showStockWarning();
+            return;
+        }
+    }
+
     let container = document.querySelector('.flash-container');
     if (!container) {
         container = document.createElement('div');
