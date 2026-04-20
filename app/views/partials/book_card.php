@@ -8,11 +8,13 @@ for ($s = 1; $s <= 5; $s++) {
 ?>
 <div class="book-card">
     <div class="book-card-image">
-        <?php if (!empty($book->cover_image)): ?>
-            <img src="<?= BASE_URL . (strpos($book->cover_image, '/') === 0 ? $book->cover_image : '/images/books/' . $book->cover_image) ?>" alt="<?= htmlspecialchars($book->title) ?>">
-        <?php else: ?>
-            <div class="book-card-placeholder">📚<span><?= htmlspecialchars(mb_substr($book->title, 0, 30)) ?></span></div>
-        <?php endif; ?>
+        <a href="<?= BASE_URL ?>/book/<?= $book->book_id ?>" style="display: block; width: 100%; height: 100%;">
+            <?php if (!empty($book->cover_image)): ?>
+                <img src="<?= BASE_URL . (strpos($book->cover_image, '/') === 0 ? $book->cover_image : '/images/books/' . $book->cover_image) ?>" alt="<?= htmlspecialchars($book->title) ?>">
+            <?php else: ?>
+                <div class="book-card-placeholder">📚<span><?= htmlspecialchars(mb_substr($book->title, 0, 30)) ?></span></div>
+            <?php endif; ?>
+        </a>
         
         <?php if (isset($book->total_sold) && $book->total_sold > 100): ?>
             <span class="book-card-badge badge-hot">HOT</span>

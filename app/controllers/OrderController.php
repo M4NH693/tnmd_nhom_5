@@ -13,6 +13,24 @@ class OrderController extends Controller {
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // --- Stock quantity validation before placing order ---
+            $bookModel = $this->model('Book');
+            $stockErrors = [];
+            foreach ($cartItems as $item) {
+                $bookDetail = $bookModel->getDetail($item->book_id);
+                if ($bookDetail && $item->quantity > $bookDetail->stock_quantity) {
+                    $stockErrors[] = "\"" . $item->title . "\" chỉ còn " . $bookDetail->stock_quantity . " sản phẩm (bạn đặt " . $item->quantity . ")";
+                }
+            }
+
+            if (!empty($stockErrors)) {
+                $errorMsg = "Đơn đặt hàng vượt quá số lượng trong kho, nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u@gmail.com";
+                $this->setFlash('error', $errorMsg);
+                $this->redirect('cart');
+                return;
+            }
+            // --- End stock validation ---
+
             $orderModel = $this->model('Order');
             $subtotal = $cartModel->getCartTotal($_SESSION['user_id']);
             $shippingFee = $subtotal >= 300000 ? 0 : 30000; // Miễn ship cho đơn >= 300k

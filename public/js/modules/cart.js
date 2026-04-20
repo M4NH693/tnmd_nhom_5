@@ -5,6 +5,20 @@ export function initCart() {
         form.addEventListener('submit', function(e) {
             e.preventDefault(); // Prevent page reload
             
+            // --- Frontend stock validation before AJAX ---
+            const qtyInput = this.querySelector('input[name="quantity"]');
+            const quantity = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+            const maxStock = qtyInput ? parseInt(qtyInput.dataset.stock) || parseInt(qtyInput.max) || 0 : 0;
+
+            if (maxStock > 0 && quantity > maxStock) {
+                if (typeof window.showStockWarning === 'function') {
+                    window.showStockWarning(maxStock);
+                }
+                // allow the field to remain as is, return directly to prevent form submit
+                return;
+            }
+            // --- End frontend validation ---
+
             const formData = new FormData(this);
             const submitBtn = this.querySelector('button[type="submit"]');
             if(!submitBtn) return;
@@ -47,6 +61,8 @@ export function initCart() {
                 } else {
                     if (data.redirect) {
                         window.location.href = data.redirect;
+                    } else if (data.stock_exceeded && typeof window.showStockWarning === 'function') {
+                        window.showStockWarning(data.stock_quantity);
                     } else {
                         if(typeof window.showToast === 'function') {
                             window.showToast(data.message, 'error');

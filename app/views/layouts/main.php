@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Book4u - Hiệu sách trực tuyến hàng đầu Việt Nam">
     <title><?= $pageTitle ?? 'Book4u' ?></title>
+    <link rel="icon" type="image/png" href="<?= BASE_URL ?>/icon3.png">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/style.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/components.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= BASE_URL ?>/css/pages.css?v=<?= time() ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
+
 <body>
     <!-- Header -->
     <header class="header" id="header">
         <div class="container">
             <a href="<?= BASE_URL ?>/" class="logo">
-                <div class="logo-icon" style="background: transparent; border-radius: 10px;"><img src="<?= BASE_URL ?>/icon3.png" alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"></div>
+                <div class="logo-icon" style="background: transparent; border-radius: 10px;"><img
+                        src="<?= BASE_URL ?>/icon3.png" alt="Logo"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"></div>
                 Book4u
             </a>
 
             <form class="search-bar" action="<?= BASE_URL ?>/search" method="GET" style="position:relative;">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" name="q" id="searchInput" placeholder="Tìm kiếm sách, tác giả..." 
-                       value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" autocomplete="off">
-                <i class="fas fa-times search-clear-btn" id="searchClearBtn" style="<?= empty($_GET['q']) ? 'display:none;' : 'display:block;' ?>"></i>
+                <input type="text" name="q" id="searchInput" placeholder="Tìm kiếm sách, tác giả..."
+                    value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" autocomplete="off">
+                <i class="fas fa-times search-clear-btn" id="searchClearBtn"
+                    style="<?= empty($_GET['q']) ? 'display:none;' : 'display:block;' ?>"></i>
                 <button type="submit"><i class="fas fa-arrow-right"></i></button>
                 <div id="searchSuggestions" class="search-suggestions-dropdown"></div>
             </form>
@@ -32,7 +38,8 @@
                 <a href="<?= BASE_URL ?>/" class="<?= (!isset($_GET['url']) || $_GET['url'] == '') ? 'active' : '' ?>">
                     <i class="fas fa-home"></i> Trang chủ
                 </a>
-                <a href="<?= BASE_URL ?>/books" class="<?= (isset($_GET['url']) && strpos($_GET['url'], 'book') === 0) ? 'active' : '' ?>">
+                <a href="<?= BASE_URL ?>/books"
+                    class="<?= (isset($_GET['url']) && strpos($_GET['url'], 'book') === 0) ? 'active' : '' ?>">
                     <i class="fas fa-book"></i> Sách
                 </a>
 
@@ -49,7 +56,8 @@
                     <div class="user-menu">
                         <div class="user-avatar">
                             <?php if (!empty($_SESSION['user_avatar'])): ?>
-                                <img src="<?= BASE_URL . $_SESSION['user_avatar'] ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                                <img src="<?= BASE_URL . $_SESSION['user_avatar'] ?>" alt="Avatar"
+                                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                             <?php else: ?>
                                 <?= strtoupper(mb_substr($_SESSION['user_name'], 0, 1)) ?>
                             <?php endif; ?>
@@ -75,20 +83,39 @@
 
     <!-- Flash Messages -->
     <?php if (isset($_SESSION['flash_success']) || isset($_SESSION['flash_error'])): ?>
-    <div class="flash-container">
-        <?php if (isset($_SESSION['flash_success'])): ?>
-            <div class="flash-message alert-success">
-                <i class="fas fa-check-circle"></i> <?= $_SESSION['flash_success'] ?>
-            </div>
-            <?php unset($_SESSION['flash_success']); ?>
-        <?php endif; ?>
-        <?php if (isset($_SESSION['flash_error'])): ?>
-            <div class="flash-message alert-error">
-                <i class="fas fa-exclamation-circle"></i> <?= $_SESSION['flash_error'] ?>
-            </div>
-            <?php unset($_SESSION['flash_error']); ?>
-        <?php endif; ?>
-    </div>
+        <div class="flash-container">
+            <?php if (isset($_SESSION['flash_success'])): ?>
+                <div class="flash-message alert-success">
+                    <i class="fas fa-check-circle"></i> <?= $_SESSION['flash_success'] ?>
+                </div>
+                <?php unset($_SESSION['flash_success']); ?>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['flash_error'])): ?>
+                <?php if (strpos($_SESSION['flash_error'], 'vượt quá số lượng trong kho') !== false): ?>
+                    <!-- Stock exceeded popup modal -->
+                    <div id="stockWarningModal"
+                        style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:10000;"
+                        onclick="if(event.target===this)this.remove()">
+                        <div
+                            style="background:var(--bg-primary,#fff);border-radius:16px;padding:32px;max-width:460px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;position:relative;animation:slideUp 0.3s ease;">
+                            <button onclick="document.getElementById('stockWarningModal').remove()"
+                                style="position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.8rem;cursor:pointer;color:#999;padding:0;line-height:1;"
+                                onmouseover="this.style.color='#ff4757'" onmouseout="this.style.color='#999'">&times;</button>
+                            <div style="font-size:3rem;margin-bottom:12px;">⚠️</div>
+                            <h3 style="margin-bottom:12px;color:var(--text-primary,#333);font-size:1.2rem;">Đơn đặt hàng vượt quá số
+                                lượng trong kho</h3>
+                            <p style="color:var(--text-secondary,#666);margin-bottom:0;line-height:1.6;">nếu bạn vẫn muốn đặt thì
+                                hãy liên hệ với gmail: book4u@gmail.com</p>
+                        </div>
+                    </div>
+                <?php else: ?>
+                    <div class="flash-message alert-error">
+                        <i class="fas fa-exclamation-circle"></i> <?= $_SESSION['flash_error'] ?>
+                    </div>
+                <?php endif; ?>
+                <?php unset($_SESSION['flash_error']); ?>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
 
     <!-- Main Content -->
@@ -125,7 +152,7 @@
                 </div>
                 <div class="footer-col">
                     <h4>Liên hệ</h4>
-                    <a href="#"><i class="fas fa-phone"></i> 1900 6868</a>
+                    <a href="#"><i class="fas fa-phone"></i> 900 6868</a>
                     <a href="#"><i class="fas fa-envelope"></i> Book4U@gmail.com</a>
                     <a href="#"><i class="fas fa-map-marker-alt"></i> Hà Nội, Việt Nam</a>
                 </div>
@@ -133,11 +160,12 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                &copy; 2026 BookStore. All rights reserved. Made with ❤️ by Nhóm 5.
+                &copy; 2026 Book4U. All rights reserved
             </div>
         </div>
     </footer>
 
     <script type="module" src="<?= BASE_URL ?>/js/main.js"></script>
 </body>
+
 </html>

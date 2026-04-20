@@ -26,13 +26,16 @@
                     <div class="cart-item-info">
                         <h3><a href="<?= BASE_URL ?>/book/<?= $item->book_id ?>"><?= htmlspecialchars($item->title) ?></a></h3>
                         <div class="cart-item-price"><?= number_format($item->price, 0, ',', '.') ?>₫</div>
-                        <form action="<?= BASE_URL ?>/cart/update" method="POST" style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+                        <form action="<?= BASE_URL ?>/cart/update" method="POST" style="margin-top:8px; display:flex; gap:8px; align-items:center;" class="cart-update-form">
                             <input type="hidden" name="cart_item_id" value="<?= $item->cart_item_id ?>">
                             <div class="quantity-selector" style="transform:scale(0.85); transform-origin:left;">
-                                <button type="button" onclick="this.parentNode.querySelector('input').stepDown(); this.closest('form').submit();">−</button>
-                                <input type="number" name="quantity" value="<?= $item->quantity ?>" min="1" max="<?= $item->stock_quantity ?>" onchange="this.closest('form').submit();">
-                                <button type="button" onclick="this.parentNode.querySelector('input').stepUp(); this.closest('form').submit();">+</button>
+                                <button type="button" class="qty-decrease" data-stock="<?= $item->stock_quantity ?>">−</button>
+                                <input type="number" name="quantity" value="<?= $item->quantity ?>" min="1" max="<?= $item->stock_quantity ?>" data-stock="<?= $item->stock_quantity ?>" class="cart-qty-input">
+                                <button type="button" class="qty-increase" data-stock="<?= $item->stock_quantity ?>">+</button>
                             </div>
+                            <span class="stock-info" style="font-size: 0.75rem; color: var(--text-secondary, #888);">
+                                (Kho: <?= $item->stock_quantity ?>)
+                            </span>
                         </form>
                     </div>
 
@@ -83,3 +86,59 @@
         <?php endif; ?>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle quantity decrease buttons
+    document.querySelectorAll('.qty-decrease').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const form = this.closest('form');
+            const input = form.querySelector('.cart-qty-input');
+            let val = parseInt(input.value) - 1;
+            if (val < 1) val = 1;
+            input.value = val;
+            form.submit();
+        });
+    });
+
+    // Handle quantity increase buttons
+    document.querySelectorAll('.qty-increase').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const form = this.closest('form');
+            const input = form.querySelector('.cart-qty-input');
+            const stock = parseInt(this.dataset.stock) || 999;
+            let val = parseInt(input.value) + 1;
+            
+            if (val > stock) {
+                val = stock;
+                if (typeof window.showStockWarning === 'function') {
+                    window.showStockWarning(stock);
+                }
+                return;
+            }
+            input.value = val;
+            form.submit();
+        });
+    });
+
+    // Handle manual input change
+    document.querySelectorAll('.cart-qty-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const stock = parseInt(this.dataset.stock) || 999;
+            let val = parseInt(this.value);
+            
+            if (val < 1) {
+                this.value = 1;
+            } else if (val > stock) {
+                this.value = stock;
+                if (typeof window.showStockWarning === 'function') {
+                    window.showStockWarning(stock);
+                }
+                return;
+            }
+            this.closest('form').submit();
+        });
+    });
+});
+</script>
+

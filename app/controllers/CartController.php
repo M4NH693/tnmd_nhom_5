@@ -32,6 +32,34 @@ class CartController extends Controller {
             $quantity = max(1, (int)($_POST['quantity'] ?? 1));
 
             $cartModel = $this->model('Cart');
+
+            // --- Stock quantity validation ---
+            $stockQuantity = $cartModel->getBookStock($bookId);
+            $existingQty = $cartModel->getExistingQuantity($_SESSION['user_id'], $bookId);
+            $totalRequested = $existingQty + $quantity;
+
+            if ($totalRequested > $stockQuantity) {
+                $errorMsg = "Đơn đặt hàng vượt quá số lượng trong kho, nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u@gmail.com";
+                
+                if ($isAjax) {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'success' => false, 
+                        'message' => $errorMsg,
+                        'stock_exceeded' => true,
+                        'stock_quantity' => $stockQuantity,
+                        'existing_qty' => $existingQty
+                    ]);
+                    exit;
+                }
+
+                $this->setFlash('error', $errorMsg);
+                $referer = $_SERVER['HTTP_REFERER'] ?? BASE_URL;
+                header("Location: $referer");
+                exit;
+            }
+            // --- End stock validation ---
+
             $cartModel->addItem($_SESSION['user_id'], $bookId, $quantity);
             
             if ($isAjax) {
@@ -60,7 +88,24 @@ class CartController extends Controller {
             $quantity   = max(1, (int)($_POST['quantity'] ?? 1));
 
             $cartModel = $this->model('Cart');
-            $cartModel->updateQuantity($cartItemId, $_SESSION['user_id'], $quantity);
+
+            // Get the book_id from the cart item to check stock
+            $cartItem = $cartModel->queryOne(
+                "SELECT book_id FROM cart_items WHERE cart_item_id = ? AND user_id = ?",
+                [$cartItemId, $_SESSION['user_id']]
+            );
+
+            if ($cartItem) {
+                $stockQuantity = $cartModel->getBookStock($cartItem->book_id);
+
+                if ($quantity > $stockQuantity) {
+                    $this->setFlash('error', "Đơn đặt hàng vượt quá số lượng trong kho, nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u@gmail.com");
+                    $this->redirect('cart');
+                    return;
+                }
+
+                $cartModel->updateQuantity($cartItemId, $_SESSION['user_id'], $quantity);
+            }
         }
 
         $this->redirect('cart');
