@@ -152,7 +152,7 @@
                 </div>
                 <div class="footer-col">
                     <h4>Liên hệ</h4>
-                    <a href="#"><i class="fas fa-phone"></i> 1900 6868</a>
+                    <a href="#"><i class="fas fa-phone"></i> 900 6868</a>
                     <a href="#"><i class="fas fa-envelope"></i> Book4U@gmail.com</a>
                     <a href="#"><i class="fas fa-map-marker-alt"></i> Hà Nội, Việt Nam</a>
                 </div>

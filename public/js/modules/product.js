@@ -50,7 +50,7 @@ window.showStockWarning = function(stockQty) {
                 Đơn đặt hàng vượt quá số lượng trong kho
             </h3>
             <p style="color: var(--text-secondary, #666); margin-bottom: 0; line-height: 1.6;">
-                nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u
+                nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u@gmail.com
             </p>
         </div>
     `;

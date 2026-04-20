@@ -39,7 +39,7 @@ class CartController extends Controller {
             $totalRequested = $existingQty + $quantity;
 
             if ($totalRequested > $stockQuantity) {
-                $errorMsg = "Đơn đặt hàng vượt quá số lượng trong kho, nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u";
+                $errorMsg = "Đơn đặt hàng vượt quá số lượng trong kho, nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u@gmail.com";
                 
                 if ($isAjax) {
                     header('Content-Type: application/json');
@@ -99,7 +99,7 @@ class CartController extends Controller {
                 $stockQuantity = $cartModel->getBookStock($cartItem->book_id);
 
                 if ($quantity > $stockQuantity) {
-                    $this->setFlash('error', "Đơn đặt hàng vượt quá số lượng trong kho, nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u");
+                    $this->setFlash('error', "Đơn đặt hàng vượt quá số lượng trong kho, nếu bạn vẫn muốn đặt thì hãy liên hệ với gmail: book4u@gmail.com");
                     $this->redirect('cart');
                     return;
                 }
